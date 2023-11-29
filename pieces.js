@@ -91,6 +91,22 @@ for(let i = pieces.length -1 ; i >= 0; i--){
     }
 }
 console.log(noms)
+
+// Gestion input range et affichage on change
+const rangeBtn = document.getElementById('rangePrix')
+const spanRange = document.getElementById('valeurRange')
+
+rangeBtn.addEventListener('input', () => {
+    spanRange.innerText = rangeBtn.value + " €"                 // Affichage en temps réel de la valeur de l'input
+    const prixMax = rangeBtn.value                              // prix de l'input
+    const articlePrixMax = pieces.filter(function (piece) {
+        return piece.prix <= prixMax
+    })
+    document.querySelector(".fiches").innerHTML = "";
+    genererPieces(articlePrixMax)
+
+})
+
 //Création de l'en-tête
 
 const pElement = document.createElement('p')
