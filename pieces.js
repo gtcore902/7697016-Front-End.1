@@ -72,3 +72,23 @@ boutonDecroissant.addEventListener('click', () => {
     })
     console.log(piecesDecroissant)
 })
+
+const noms = pieces.map(piece => piece.nom)
+for (let i = pieces.length -1; i >= 0; i--) {
+    console.log('entrée boucle')
+    if (pieces[i].prix > 35) {
+        noms.splice(i,1)
+    }
+    console.log(noms)
+}
+
+const abordablesElements = document.createElement('ul')
+for (let i = 0; i < noms.length; i++) {
+    const li = document.createElement('li')
+    li.innerText = noms[i]
+    abordablesElements.appendChild(li)
+}
+
+document.querySelector('.abordables')
+    .appendChild(abordablesElements)
+
