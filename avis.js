@@ -4,10 +4,20 @@ export function ajoutListenersAvis() {
  
     for (let i = 0; i < piecesElements.length; i++) {
  
-     piecesElements[i].addEventListener("click", function (event) {
+     piecesElements[i].addEventListener("click", async function (event) {
  
         const id = event.target.dataset.id;
-        fetch(`http://localhost:8081/pieces/${id}/avis`);
+        const reponse = await fetch(`http://localhost:8081/pieces/${id}/avis`);
+        const avis = await reponse.json();
+        console.log(avis)
+
+        const pieceElement = event.target.parentElement
+        const avisElement = document.createElement("p");
+        
+        for (let i = 0; i < avis.length; i++) {
+            pieceElement.appendChild(avisElement)
+            avisElement.innerHTML += `${avis[i].utilisateur} : ${avis[i].commentaire} <br>`;
+        }
  
      });
  
