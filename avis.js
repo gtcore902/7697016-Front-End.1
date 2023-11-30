@@ -7,8 +7,15 @@ export function ajoutListenersAvis() {
      piecesElements[i].addEventListener("click", async function (event) {
  
         const id = event.target.dataset.id;
-        const reponse = await fetch("http://localhost:8081/pieces/" + id + "/avis");
-        const avis = await reponse.json();
+        let avis = window.localStorage.getItem("avis");
+        if (avis === null) {
+            const reponse = await fetch("http://localhost:8081/pieces/" + id + "/avis");
+            avis = await reponse.json();
+            window.localStorage.setItem("avis", JSON.stringify(avis))
+        } else {
+            avis = JSON.parse(avis);
+        }
+
         const pieceElement = event.target.parentElement;
 
         const avisElement = document.createElement("p");
