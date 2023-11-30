@@ -1,8 +1,22 @@
 import { ajoutListenersAvis, ajoutListenerEnvoyerAvis } from "./avis.js";
 
-// Récupération des pièces depuis le fichier JSON
-const reponse = await fetch('http://localhost:8081/pieces/');
-const pieces = await reponse.json();
+//Récupération des pièces eventuellement stockées dans le localStorage
+let pieces = window.localStorage.getItem('pieces');
+
+if (pieces === null){
+   // Récupération des pièces depuis l'API
+   const reponse = await fetch('http://localhost:8081/pieces/');
+   pieces = await reponse.json();
+   // Transformation des pièces en JSON
+   const valeurPieces = JSON.stringify(pieces);
+   // Stockage des informations dans le localStorage
+   window.localStorage.setItem("pieces", valeurPieces);
+}else{
+   pieces = JSON.parse(pieces);
+}
+
+
+
 // on appel la fonction pour ajouter le listener au formulaire
 ajoutListenerEnvoyerAvis()
 
@@ -100,6 +114,13 @@ for(let i = pieces.length -1 ; i >= 0; i--){
     }
 }
 console.log(noms)
+
+const majBtn = document.querySelector('.btn-maj');
+majBtn.addEventListener('click', () =>{
+    window.localStorage.removeItem('pieces')
+    console.log('localStorage vide')
+})
+
 //Création de l'en-tête
 
 const pElement = document.createElement('p')
