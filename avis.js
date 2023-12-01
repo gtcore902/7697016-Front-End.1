@@ -47,3 +47,40 @@ export function ajoutListenersAvis() {
     });
     
  }
+
+ // Gestion des avis
+ export async function afficherGraphiqueAvis() {
+    const avis = await fetch("http://localhost:8081/avis").then(avis => avis.json());
+    const nb_commentaires = [0, 0, 0, 0, 0]
+    console.log(nb_commentaires)
+    for (let commentaire of avis) {
+        nb_commentaires[commentaire.nbEtoiles -1]++
+       }
+   console.log(nb_commentaires)
+   
+   // Legende qui s'affichera sur la gauche de la barre horizontale
+   const labels = ["5", "4", "3", "2", "1"]
+   const data = {
+       labels: labels,
+       datasets: [{
+           label: "Etoiles attribuées",
+           data: nb_commentaires.reverse(),
+        //    fill: false,
+           backgroundColor: "rgba(255, 230, 0, 1)",
+       }]
+   }
+   // Objet de configuration final
+   const config = {
+       type: "bar",
+       data: data,
+       otpions: {
+           indexAxis: "y",
+       },
+   }
+   
+   const graphiqueAvis = new Chart(
+       document.querySelector('#graphique-avis'),
+       config,
+   )
+ }
+
