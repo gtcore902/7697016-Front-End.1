@@ -48,8 +48,7 @@ export function ajoutListenerEnvoyerAvis() {
 
 }
 
-export let nombreAvis = 0
-
+let nombreAvis = 0
 export async function afficherGraphiqueAvis() {
     // Calcul du nombre total de commentaires par quantité d'étoiles attribuées
     const avis = await fetch("http://localhost:8081/avis").then(avis => avis.json());
@@ -83,5 +82,51 @@ export async function afficherGraphiqueAvis() {
         document.querySelector("#graphique-avis"),
         config,
     );
-    return avis.length
 }
+
+// Récupérationdes pièces
+const piecesJSON = window.localStorage.getItem("pieces")
+const pieces = JSON.parse(piecesJSON)
+
+// Création variables nombre de commentaires
+let nbCommentairesDispo = 0
+let nbCommentairesNonDispo = 0
+
+const avis = await fetch("http://localhost:8081/avis").then(avis => avis.json());
+
+for (let i = 0; i < avis.length; i++) {
+    const piece = pieces.find(p => p.id === avis[i].pieceId)
+
+    if (piece) {
+        if (piece.disponibilite) {
+            nbCommentairesDispo++
+        } else {
+            nbCommentairesNonDispo++
+        }
+    }
+}
+
+    // Légende qui s'affichera sur la gauche à côté de la barre horizontale
+    const labels =["Pièces disponibles", "pièces non disponibles"];
+    // Données et personnalisation du graphique
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: "Commentaires attribués",
+            data:  [nbCommentairesDispo, nbCommentairesNonDispo ],
+            backgroundColor: "rgba(255, 230, 0, 1)", // couleur jaune
+        }],
+    };
+    // Objet de configuration final
+    const config = {
+        type: "bar",
+        data: data,
+    };
+    // Rendu du graphique dans l'élément canvas
+    const graphiqueCommentaires = new Chart(
+        document.querySelector("#graphique-commentaires"),
+        config,
+    )
+
+
+
