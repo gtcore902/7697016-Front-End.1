@@ -48,9 +48,12 @@ export function ajoutListenerEnvoyerAvis() {
 
 }
 
+export let nombreAvis = 0
+
 export async function afficherGraphiqueAvis() {
     // Calcul du nombre total de commentaires par quantité d'étoiles attribuées
     const avis = await fetch("http://localhost:8081/avis").then(avis => avis.json());
+    nombreAvis = avis.length
     const nb_commentaires = [0, 0, 0, 0, 0];
 
     for (let commentaire of avis) {
@@ -80,5 +83,5 @@ export async function afficherGraphiqueAvis() {
         document.querySelector("#graphique-avis"),
         config,
     );
+    return avis.length
 }
-

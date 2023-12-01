@@ -1,4 +1,4 @@
-import { ajoutListenersAvis, ajoutListenerEnvoyerAvis, afficherAvis, afficherGraphiqueAvis } from "./avis.js";
+import { ajoutListenersAvis, ajoutListenerEnvoyerAvis, afficherAvis, afficherGraphiqueAvis, nombreAvis } from "./avis.js";
 //Récupération des pièces eventuellement stockées dans le localStorage
 let pieces = window.localStorage.getItem('pieces');
 
@@ -145,6 +145,7 @@ const prixDisponibles = pieces.map(piece => piece.prix)
 for (let i = pieces.length - 1; i >= 0; i--) {
     if (pieces[i].disponibilite === false) {
         nomsDisponibles.splice(i, 1);
+        console.log(nomsDisponibles.length)
         prixDisponibles.splice(i, 1);
     }
 }
@@ -177,3 +178,46 @@ boutonMettreAJour.addEventListener("click", function () {
 });
 
 await afficherGraphiqueAvis();
+
+async function afficherNombreAvis () {
+    let pieces = await fetch("http://localhost:8081/pieces").then(pieces => pieces.json())
+    let nbPiecesTotales = pieces.length
+    let nbPiecesCommentees = 0
+    for (const element of pieces) {
+        if (element.disponibilite) {
+            nbPiecesCommentees += 1
+        }
+    }
+    // Légende graphique
+    const labels = ["Pièces disponibles", "Pièces non disponibles"]
+    const data= {
+        labels: labels,
+        datasets: [{
+            label: "Nombre de commentaires",
+            data: [nbPiecesTotales, nbPiecesCommentees]
+        }]
+    }
+    // Set configuration
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    max: nombreAvis,
+                    min: 0,
+                    ticks: {
+                        stepSize: 1,
+                    }
+                }
+            }
+        }
+    }
+    // Rendu du graphique
+    const graphiqueNbAvis = new Chart(
+        document.getElementById('graphique-commentaires'),
+        config
+    )
+}
+
+await afficherNombreAvis()
